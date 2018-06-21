@@ -84,3 +84,22 @@ nginx-ingress-default-backend  ClusterIP     10.35.241.12  <none>       80/TCP  
   * Use `watch kubectl get svc` to constantly keep checking if the LoadBalancer is up (i.e. IP address is allocated to `nginx-ingress-controller` service)
 
 Now go ahead and deploy your ingress resources in respective namespaces. Checkout file named `cross-ns-resources.yaml` in this repository.
+
+## Test our Cross Namespace Nginx Ingress on GKE
+* Deploy all resources in `cross-ns-resources.yaml` by running
+```
+kubectl apply -f cross-ns-resources.yaml
+```
+
+* Edit your `/etc/hosts` and add following lines towards the end:
+```
+35.200.162.167 machine.deep
+35.200.162.167 human.deep
+```
+  * Replace `35.200.162.167` with the actual IP Address of your Load Balancer as we checked under `v1/Service` heading at the time of installing nginx-ingress helm chart
+
+
+* Navigate to `machine.deep` in your browser, output should be in the lines of:
+![machine deep screenshot](machine-deep-screenshot.png?raw=true)
+* Navigate to `human.deep` in your browser, output should be in the lines of:
+![machine deep screenshot](human-deep-screenshot.png?raw=true)
