@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: machine
+
+--
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: human
+
+--
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: nginx
+  name: machine-nginx
+  namespace: machine
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
+
+--
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: nginx
+  name: human-nginx
+  namespace: human
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
+
+--
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+  namespace: human
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: nginx
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - image: deepsukhwani/nginx:human
+        name: nginx
+        ports:
+        - containerPort: 80
+
+--
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+  namespace: machine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: nginx
+  template:
+    metadata:
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - image: deepsukhwani/nginx:machine
+        name: nginx
+        ports:
+        - containerPort: 80
+
+--
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: human
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: human.deep
+    http:
+      paths:
+      - backend:
+          serviceName: human-nginx
+          servicePort: 80
+        path: /
+
+--
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: machine
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: machine.deep
+    http:
+      paths:
+      - backend:
+          serviceName: machine-nginx
+          servicePort: 80
+        path: /
