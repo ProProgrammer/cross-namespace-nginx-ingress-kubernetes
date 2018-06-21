@@ -3,14 +3,14 @@ kind: Namespace
 metadata:
   name: machine
 
---
+---
 
 apiVersion: v1
 kind: Namespace
 metadata:
   name: human
 
---
+---
 
 apiVersion: v1
 kind: Service
@@ -27,7 +27,7 @@ spec:
   selector:
     run: nginx
 
---
+---
 
 apiVersion: v1
 kind: Service
@@ -44,7 +44,7 @@ spec:
   selector:
     run: nginx
 
---
+---
 
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -70,7 +70,7 @@ spec:
         ports:
         - containerPort: 80
 
---
+---
 
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -95,7 +95,7 @@ spec:
         ports:
         - containerPort: 80
 
---
+---
 
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -114,7 +114,7 @@ spec:
           servicePort: 80
         path: /
 
---
+---
 
 apiVersion: extensions/v1beta1
 kind: Ingress
